@@ -74,7 +74,7 @@ public class MicroFramework {
     /**
      * Returns the internal server instance (used for testing).
      */
-    static HttpServer getServer() {
+    public static HttpServer getServer() {
         return server;
     }
 }
