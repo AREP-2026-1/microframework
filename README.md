@@ -17,63 +17,54 @@ MicroFramework is a minimalist web framework that converts a basic HTTP server i
 
 ```mermaid
 classDiagram
-    direction TB
+    direction LR
+
+    App ..> MicroFramework : uses
+    MicroFramework *-- HttpServer : owns
+    HttpServer o-- RequestHandler : routes
+    HttpServer ..> Request : creates
+    HttpServer ..> Response : creates
+    RequestHandler ..> Request : reads
+    RequestHandler ..> Response : writes
 
     class App {
-        +main(String[] args)$ void
+        +main()$ void
     }
 
     class MicroFramework {
-        -HttpServer server$
-        -int port$
-        +get(String path, RequestHandler handler)$ void
-        +staticfiles(String path)$ void
+        +get(path, handler)$ void
+        +staticfiles(path)$ void
         +start()$ void
     }
 
     class HttpServer {
-        -Map~String, RequestHandler~ getRoutes
-        -String staticFilesPath
-        -ServerSocket serverSocket
-        +addGetRoute(String, RequestHandler) void
+        -getRoutes Map
+        -staticFilesPath String
+        +addGetRoute() void
         +start() void
         +stop() void
-        -handleClient(Socket) void
-        -handleRestRequest(Request, Response, OutputStream) void
-        -handleStaticFile(String, OutputStream) void
     }
 
     class RequestHandler {
         <<interface>>
-        <<FunctionalInterface>>
-        +handle(Request req, Response res) String
+        +handle(req, res) String
     }
 
     class Request {
-        -String method
-        -String path
-        -Map~String, String~ queryParams
-        +getValues(String name) String
+        -method String
+        -path String
+        -queryParams Map
+        +getValues(name) String
         +getMethod() String
         +getPath() String
-        +parseQueryString(String)$ Map
     }
 
     class Response {
-        -int statusCode
-        -String contentType
-        +setStatusCode(int) void
-        +setContentType(String) void
-        +setHeader(String, String) void
+        -statusCode int
+        -contentType String
+        +setStatusCode() void
+        +setContentType() void
     }
-
-    App ..> MicroFramework : uses
-    MicroFramework *-- HttpServer : creates
-    HttpServer o-- "0..*" RequestHandler : routes
-    HttpServer ..> Request : creates per request
-    HttpServer ..> Response : creates per request
-    RequestHandler ..> Request : reads
-    RequestHandler ..> Response : configures
 ```
 
 ### Component Diagram
